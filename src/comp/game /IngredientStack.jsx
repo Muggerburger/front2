@@ -15,17 +15,18 @@ import bell from "../../assets/img/bell.png";
 import dish from "../../assets/img/dish.png";
 import doma from "../../assets/img/doma.png";
 import ordercomputer from "../../assets/img/computer.png";
-import { Link } from "react-router-dom";
+import { Link , useNavigate} from "react-router-dom";
 import axios from 'axios';
 
 const IngredientStack = ({ orders }) => {
   const [stack, setStack] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [top, setTop] = useState(null);
-  const [timeOnPage, setTimeOnPage] = useState(0);
+  const [time, setTimeOnPage] = useState(10);
   const [ordersMatch, setOrdersMatch] = useState(false);
   const [rotate, setRotate] = useState(0);
 
+  const navigator = useNavigate();
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeOnPage((prevTime) => prevTime + 1);
@@ -42,10 +43,7 @@ const IngredientStack = ({ orders }) => {
     console.log("주문 배열: 여기도 떠야함", orders);
   }, [orders]);
 
-  // useEffect(() => {
-  //   console.log("현재 스택 값:", stack);
-  //   console.log("Top 값:", top);
-  // }, [stack, top]);
+
 
   const handlePush = (value) => {
     if (value === 0) {
@@ -79,26 +77,26 @@ const IngredientStack = ({ orders }) => {
   };
 
   //여기서부터 서버에 보내주는 시간과 닉네임
-
-//   const [gameResult, setResult] = useState({
-//     nickname : '',
-//     time : '',
-// });
-
-// const {nickname , time} = gameResult; //비구조화 할당
+  const handleSubmitForm = () => {
+    console.log("Time on page:", time);
 
 
+    // 시간과 닉네임 데이터를 서버로 전송
+    const data = {
+      time: time,
+      nickname: localStorage.getItem('nickname'),
+    };
 
-// const saveResult= async () => {
-//     await axios.post('http://localhost:8080/gameover', gameResult)
-//         .then((res) => {
-//             alert('등록되었습니다.');
-//         })
-//         .catch(error => {
-//             console.error('오류 발생:', error.response);
-//             alert('등록에 실패했습니다.');
-//         });
-// };
+    axios.post('http://localhost:8080/gameover', data)
+      .then(response => {
+        console.log('Data sent to server:', response.data);
+        navigator(`/outro?time=${time}&ordersMatch=${ordersMatch? "true" : "false"}`);
+      })
+      .catch(error => {
+        console.error('Error sending data to server:', error);
+      });
+    }
+  
 
 
   const handlePop = () => {
@@ -125,7 +123,7 @@ const IngredientStack = ({ orders }) => {
             }
           }}
         ></BackButton>
-        <h1>Time: {timeOnPage}초</h1>
+        <h1>Time: {time}초</h1>
       </HeaderWrapper>
       <MiddleWrapper>
         <LeftWrapper>
@@ -157,9 +155,10 @@ const IngredientStack = ({ orders }) => {
               }
             ></TopbugerImg>
             <Bell
-              to={`/outro?time=${timeOnPage}&ordersMatch=${
-                ordersMatch ? "true" : "false"
-              }`}
+              onClick={() => {
+                handleSubmitForm()
+              }}
+    
             />
           </DishWrapper>
         </LeftWrapper>

@@ -1,22 +1,38 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import loginback from "../../assets/img/loginback.png";
-import {Link} from  "react-router-dom";
-
+import { Link } from "react-router-dom";
 
 const Rank = (props) => {
+  const [users, setUsers] = useState([]);
 
+  useEffect(() => {
+    // 서버에서 사용자 랭킹을 가져오는 함수 정의
+    const fetchRanking = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/ranking");
+        // 받아온 사용자 목록을 상태에 설정
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Error fetching ranking:", error);
+      }
+    };
 
+    // 페이지가 로드될 때 랭킹을 불러옴
+    fetchRanking();
+  }, []);
 
   return (
     <Back>
-       <BackLink to="/home">{"<-"}</BackLink>
+      <BackLink to="/home">{"<-"}</BackLink>
       <WrapperRank>
-        <First>1등 : 이름 : 시간: </First>
-        <Second>2등 : 이름 : 시간: </Second>
-        <Third>3등 : 이름 : 시간: </Third>
-        <Fourth>4등 : 이름 : 시간: </Fourth>
-        <MyRank>5등 : 이름 : 시간: </MyRank>
+        {/* 서버에서 받아온 사용자 목록을 매핑하여 화면에 표시 */}
+        {users.map((user, index) => (
+          <RankItem key={index}>
+            {index + 1}등 : 이름 : {user.nickname} : 시간: {user.time}
+          </RankItem>
+        ))}
       </WrapperRank>
     </Back>
   );
@@ -39,7 +55,7 @@ const WrapperRank = styled.div`
   width: 600px;
   height: 700px;
   display: flex;
-  flex-direction : column;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: #ffef9b;
@@ -51,41 +67,27 @@ const WrapperRank = styled.div`
   color: #232323;
 `;
 
-const First = styled.div`
+const RankItem = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #FFD90F;
+  background-color: #ffd90f;
   border-radius: 30px;
   padding: 20px;
   font-family: "hs";
   font-size: 30px;
   color: #232323;
-`;
-
-const Second = styled(First)`
-    margin-top : 10%;
-
-`;
-
-const Third = styled(Second)`
-`;
-
-const Fourth = styled(Second)`
-`;
-
-const MyRank = styled(Second)`
+  margin-top: 10%;
 `;
 
 const BackLink = styled(Link)`
-position : absolute;
- left:1.5em;
- top:1.5em;
+  position: absolute;
+  left: 1.5em;
+  top: 1.5em;
   text-align: center;
   border-radius: 30px;
   padding: 20px;
   width: 5%;
-
   background-color: #ffef9b;
   font-size: 3em;
   text-decoration: none;

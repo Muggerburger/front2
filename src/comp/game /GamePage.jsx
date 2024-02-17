@@ -8,19 +8,7 @@ import axios from 'axios'
 
 const GamePage = () => {
 
-//     const token = localStorage.getItem('TOKEN');
-  
-//   const getKaKaoUserData = async (token) => {
-//     const kakaoUser =  axios.get(`http://localhost:8080/nickname', {
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//     })
-    
-//     return await kakaoUser.data
-// }
 
-// getKaKaoUserData(token)
 
   const [orders, setOrders] = useState([]);
 
