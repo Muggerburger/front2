@@ -4,7 +4,7 @@ import loginback from '../../assets/img/loginback.png';
 import { Link } from 'react-router-dom';
 import { ReactComponent as Kakao } from '../../assets/icon/kakao.svg';
 
-const Home = () => {
+const Home = (props) => {
 
     const REST_API_KEY = process.env.REACT_APP_REST_API_KEY;
     const REDIRECT_URI = process.env.REACT_APP_REDIRECT_URI;
