@@ -10,7 +10,8 @@ const LoginHandler = () => {
     try {
       const res = await axios.get(`http://localhost:8080/login?code=${code}`);
       console.log(res);
-      localStorage.setItem("TOKEN", res.data)
+      localStorage.setItem("TOKEN", res.data);
+
       // 로그인이 성공하면 이동할 페이지로 navigate
       navigate(`/home?code=${code}`);
     } catch (error) {
@@ -18,6 +19,8 @@ const LoginHandler = () => {
       alert('실패했습니다.');
     }
   };
+
+
  
   useEffect(() => {
     kakaoLogin();
